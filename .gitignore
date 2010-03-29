@@ -1,0 +1,5 @@
+*~
+*.bak
+*.tar.gz
+*.o
+t/saucetest
