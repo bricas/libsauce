@@ -145,7 +145,26 @@ int sauce_write_file( FILE *file, sauce *record ) {
 
 int _write_record( FILE *file, sauce * record ) {
     if( fseek( file, 0, SEEK_END ) == 0 ) {
-        /* write record */
+        fwrite( "\032", 1, 1, file  );
+
+        // TODO: write comments if needed
+
+        fwrite( record->id, sizeof( record->id ) - 1, 1, file  );
+        fwrite( record->version, sizeof( record->version ) - 1, 1, file );
+        fwrite( record->title, sizeof( record->title ) - 1, 1, file );
+        fwrite( record->author, sizeof( record->author ) - 1, 1, file );
+        fwrite( record->group, sizeof( record->group ) - 1, 1, file );
+        fwrite( record->date, sizeof( record->date ) - 1, 1, file );
+        fwrite( &(record->filesize), sizeof( record->filesize ), 1, file );
+        fwrite( &(record->datatype), sizeof( record->datatype ), 1, file );
+        fwrite( &(record->filetype), sizeof( record->filetype ), 1, file );
+        fwrite( &(record->tinfo1), sizeof( record->tinfo1 ), 1, file );
+        fwrite( &(record->tinfo2), sizeof( record->tinfo2 ), 1, file );
+        fwrite( &(record->tinfo3), sizeof( record->tinfo3 ), 1, file );
+        fwrite( &(record->tinfo4), sizeof( record->tinfo4 ), 1, file );
+        fwrite( &(record->comments), sizeof( record->comments ), 1, file );
+        fwrite( &(record->flags), sizeof( record->flags), 1, file );
+        fwrite( record->filler, sizeof( record->filler ) - 1, 1, file );
         return 0;
     }
     else {
@@ -169,7 +188,7 @@ int sauce_remove_filename( char *filename ) {
 int sauce_remove_file( FILE *file ) {
     sauce *record = sauce_read_file( file );
 
-    if( record == NULL ) {
+    if( record == NULL || strcmp( record->id, "SAUCE" ) != 0 ) {
         return 0;
     }
 
