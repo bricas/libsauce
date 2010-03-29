@@ -173,6 +173,10 @@ int sauce_remove_file( FILE *file ) {
         return 0;
     }
 
-    /* truncate to record->filesize */
+    if( ftruncate( fileno( file ), record->filesize ) != 0 ) {
+        printf( "Truncate failed" );
+        exit( 1 );
+    }
+
     return 0;
 }
