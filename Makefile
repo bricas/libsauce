@@ -9,3 +9,6 @@ t/saucetest.o: t/test.c src/libsauce.h
 
 src/libsauce.o: src/libsauce.c src/libsauce.h
 	$(CC) $(CFLAGS) -c src/libsauce.c -o src/libsauce.o
+
+clean:
+	@-rm -f src/*.o t/*.o t/saucetest
