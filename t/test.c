@@ -8,7 +8,7 @@ int main( int argc, char *argv[] ) {
         exit( EXIT_FAILURE );
     }
 
-    if( strcmp( record->id, "SAUCE" ) != 0 ) {
+    if( strcmp( record->id, SAUCE_ID ) != 0 ) {
         printf( "File does not have a SAUCE record\n" );
         return 0;
     }
