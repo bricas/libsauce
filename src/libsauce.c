@@ -28,10 +28,10 @@ void _read_record( FILE *file, sauce *record ) {
         return;
     }
 
-    fread( record->id, sizeof( record->id ) - 1, 1, file );
+    int read_status = fread( record->id, sizeof( record->id ) - 1, 1, file );
     record->id[ sizeof( record->id ) - 1 ] = '\0';
 
-    if( strcmp( record->id, SAUCE_ID ) != 0 ) {
+    if( read_status != 1 || strcmp( record->id, SAUCE_ID ) != 0 ) {
         free( record );
         return;
     }
@@ -81,7 +81,10 @@ void _read_comments( FILE *file, char **comment_lines, int comments ) {
 
     if( fseek( file, 0 - ( RECORD_SIZE + 5 + COMMENT_SIZE * comments ), SEEK_END ) == 0 ) {
         char id[ 6 ];
-        fread( id, sizeof( id ) - 1, 1, file );
+        if( fread( id, sizeof( id ) - 1, 1, file ) != 1 ) {
+            printf( "COMNT record truncated: ID failed\n" );
+            exit( 1 );
+        }
         id[ sizeof( id ) - 1 ] = '\0';
 
         if( strcmp( id, COMMENT_ID ) != 0 ) {
@@ -92,7 +95,10 @@ void _read_comments( FILE *file, char **comment_lines, int comments ) {
         for( i = 0; i < comments; i++ ) {
             char buf[ COMMENT_SIZE + 1 ] = "";
 
-            fread( buf, COMMENT_SIZE, 1, file );
+            if( fread( buf, COMMENT_SIZE, 1, file ) != 1 ) {
+                printf( "COMNT record truncated: comment line %d failed\n", i + 1 );
+                exit( 1 );
+            }
             buf[ COMMENT_SIZE ] = '\0';
 
             if( ferror( file ) == 0 ) {

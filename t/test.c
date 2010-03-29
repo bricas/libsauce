@@ -8,6 +8,11 @@ int main( int argc, char *argv[] ) {
         exit( EXIT_FAILURE );
     }
 
+    if( strcmp( record->id, "SAUCE" ) != 0 ) {
+        printf( "File does not have a SAUCE record\n" );
+        return 0;
+    }
+
     printf( "%9s: [%s]\n", "id", record->id );
     printf( "%9s: [%s]\n", "version", record->version );
     printf( "%9s: [%s]\n", "title", record->title );
