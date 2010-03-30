@@ -1,5 +1,34 @@
+/**
+ * @file
+ * @author  Brian Cassidy <brian.cassidy@gmail.com>
+ * @version 0.01
+ *
+ * @section LICENSE
+ *
+ * This software is copyright (c) 2010 by Brian Cassidy.
+ * 
+ * This is free software; you can redistribute it and/or modify it under
+ * the same terms as the Perl 5 programming language system itself.
+ * 
+ * Terms of the Perl programming language system itself
+ * 
+ * a) the GNU General Public License as published by the Free
+ *    Software Foundation; either version 1, or (at your option) any
+ *    later version, or
+ * b) the "Artistic License"
+ *
+ * @section DESCRIPTION
+ *
+ * A C library to read, write and remove SAUCE records.
+ */
+
 #include "libsauce.h"
 
+/**
+ * Read SAUCE via a filename
+ * @param filename The filename to read
+ * @return A SAUCE record
+ */
 sauce* sauce_read_filename( char *filename ) {
     FILE *file = fopen( filename, "r" );
     if( file == NULL ) {
@@ -11,6 +40,11 @@ sauce* sauce_read_filename( char *filename ) {
     return record;
 }
 
+/**
+ * Read SAUCE via a FILE pointer
+ * @param file The FILE pointer to read
+ * @return A SAUCE record
+ */
 sauce* sauce_read_file( FILE *file ) {
     sauce *record;
 
@@ -121,6 +155,11 @@ void _read_comments( FILE *file, char **comment_lines, int comments ) {
     return;
 }
 
+/**
+ * Write SAUCE via a filename
+ * @param filename The filename in which to write the SAUCE record
+ * @return 0 for success
+ */
 int sauce_write_filename( char *filename, sauce *record ) {
     FILE *file = fopen( filename, "r+" );
 
@@ -133,6 +172,11 @@ int sauce_write_filename( char *filename, sauce *record ) {
     return rc;
 }
 
+/**
+ * Write SAUCE via a FILE pointer
+ * @param file The FILE pointer in which to write the SAUCE record
+ * @return 0 for success
+ */
 int sauce_write_file( FILE *file, sauce *record ) {
     if( sauce_remove_file( file ) == 0 ) {
         int rc = _write_record( file, record );
@@ -178,6 +222,11 @@ int _write_record( FILE *file, sauce * record ) {
     return 0;
 }
 
+/**
+ * Remove SAUCE via a filename
+ * @param filename The filename from which to remove the SAUCE record
+ * @return 0 for success
+ */
 int sauce_remove_filename( char *filename ) {
     FILE *file = fopen( filename, "r+" );
 
@@ -191,6 +240,11 @@ int sauce_remove_filename( char *filename ) {
     return rc;
 }
 
+/**
+ * Remove SAUCE via a FILE pointer
+ * @param file The FILE pointer from which to remove the SAUCE record
+ * @return 0 for success
+ */
 int sauce_remove_file( FILE *file ) {
     sauce *record = sauce_read_file( file );
 
