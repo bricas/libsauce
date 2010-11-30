@@ -22,6 +22,7 @@
  * A C library to read, write and remove SAUCE records.
  */
 
+#include <stdio.h>
 #include "libsauce.h"
 
 /**
@@ -70,26 +71,71 @@ void _read_record( FILE *file, sauce *record ) {
         return;
     }
 
-    fread( record->version, sizeof( record->version ) - 1, 1, file );
+    if( fread( record->version, sizeof( record->version ) - 1, 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE version" );
+        exit( 1 );
+    }
     record->version[ sizeof( record->version ) - 1 ] = '\0';
-    fread( record->title, sizeof( record->title ) - 1, 1, file );
+    if( fread( record->title, sizeof( record->title ) - 1, 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE title" );
+        exit( 1 );
+    }
     record->title[ sizeof( record->title ) - 1 ] = '\0';
-    fread( record->author, sizeof( record->author ) - 1, 1, file );
+    if( fread( record->author, sizeof( record->author ) - 1, 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE author" );
+        exit( 1 );
+    }
     record->author[ sizeof( record->author ) - 1 ] = '\0';
-    fread( record->group, sizeof( record->group ) - 1, 1, file );
+    if( fread( record->group, sizeof( record->group ) - 1, 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE group" );
+        exit( 1 );
+    }
     record->group[ sizeof( record->group ) - 1 ] = '\0';
-    fread( record->date, sizeof( record->date ) - 1, 1, file );
+    if( fread( record->date, sizeof( record->date ) - 1, 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE date" );
+        exit( 1 );
+    }
     record->date[ sizeof( record->date ) - 1 ] = '\0';
-    fread( &(record->filesize), sizeof( record->filesize ), 1, file );
-    fread( &(record->datatype), sizeof( record->datatype ), 1, file );
-    fread( &(record->filetype), sizeof( record->filetype ), 1, file );
-    fread( &(record->tinfo1), sizeof( record->tinfo1 ), 1, file );
-    fread( &(record->tinfo2), sizeof( record->tinfo2 ), 1, file );
-    fread( &(record->tinfo3), sizeof( record->tinfo3 ), 1, file );
-    fread( &(record->tinfo4), sizeof( record->tinfo4 ), 1, file );
-    fread( &(record->comments), sizeof( record->comments ), 1, file );
-    fread( &(record->flags), sizeof( record->flags), 1, file );
-    fread( record->filler, sizeof( record->filler ) - 1, 1, file );
+    if( fread( &(record->filesize), sizeof( record->filesize ), 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE filesize" );
+        exit( 1 );
+    }
+    if( fread( &(record->datatype), sizeof( record->datatype ), 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE datatype" );
+        exit( 1 );
+    }
+    if( fread( &(record->filetype), sizeof( record->filetype ), 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE filetype" );
+        exit( 1 );
+    }
+    if( fread( &(record->tinfo1), sizeof( record->tinfo1 ), 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE tinfo1" );
+        exit( 1 );
+    }
+    if( fread( &(record->tinfo2), sizeof( record->tinfo2 ), 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE tinfo2" );
+        exit( 1 );
+    }
+    if( fread( &(record->tinfo3), sizeof( record->tinfo3 ), 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE tinfo3" );
+        exit( 1 );
+    }
+    if( fread( &(record->tinfo4), sizeof( record->tinfo4 ), 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE tinfo4" );
+        exit( 1 );
+    }
+    if( fread( &(record->comments), sizeof( record->comments ), 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE comments" );
+        exit( 1 );
+    }
+    if( fread( &(record->flags), sizeof( record->flags), 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE flags" );
+        exit( 1 );
+    }
+    if( fread( record->filler, sizeof( record->filler ) - 1, 1, file ) != 1 ) {
+        perror( "Unable to read SAUCE filler" );
+        exit( 1 );
+    }
     record->filler[ sizeof( record->filler ) - 1 ] = '\0';
 
     if( ferror( file ) != 0 ) {
@@ -116,7 +162,7 @@ void _read_comments( FILE *file, char **comment_lines, int comments ) {
     if( fseek( file, 0 - ( RECORD_SIZE + 5 + COMMENT_SIZE * comments ), SEEK_END ) == 0 ) {
         char id[ 6 ];
         if( fread( id, sizeof( id ) - 1, 1, file ) != 1 ) {
-            printf( "COMNT record truncated: ID failed\n" );
+            perror( "COMNT record truncated (ID failed)" );
             exit( 1 );
         }
         id[ sizeof( id ) - 1 ] = '\0';
@@ -130,7 +176,7 @@ void _read_comments( FILE *file, char **comment_lines, int comments ) {
             char buf[ COMMENT_SIZE + 1 ] = "";
 
             if( fread( buf, COMMENT_SIZE, 1, file ) != 1 ) {
-                printf( "COMNT record truncated: comment line %d failed\n", i + 1 );
+                perror( "COMNT record truncated (comment line failed)" );
                 exit( 1 );
             }
             buf[ COMMENT_SIZE ] = '\0';
@@ -253,7 +299,7 @@ int sauce_remove_file( FILE *file ) {
     }
 
     if( ftruncate( fileno( file ), record->filesize ) != 0 ) {
-        printf( "Truncate failed" );
+        perror( "Truncate failed" );
         exit( 1 );
     }
 
